@@ -5,7 +5,8 @@ import { fetchImages } from 'services/api';
 import { SearchBar } from './Searchbar/Searchbar'
 import { ImageGallery } from './ImageGallery/ImageGallery'
 import { Button } from './Button/Button'
-import {Loader} from './Loader/Loader'
+import { Loader } from './Loader/Loader'
+import {Modal} from './Modal/Modal'
 
 
 export class App extends React.Component {
@@ -16,6 +17,8 @@ export class App extends React.Component {
     totalHits: null,
     error: null,
     isLoading: false,
+    showModal: false,
+    modalImage: {},
   };
 
   async componentDidUpdate(prevProps, prevState) {
@@ -24,12 +27,12 @@ export class App extends React.Component {
       prevState.query !== this.state.query
     ) {
       try {
-        const { page } = this.state;
+        const { page, query } = this.state;
         this.setState({ isLoading: true });
-        const { hits, totalHits } = await fetchImages(this.state.query, page);
+        const { hits, totalHits } = await fetchImages(query, page);
         if (totalHits < 1) {
           this.setState({
-            error: `${this.state.query} не найдено. Измените запрос.`,
+            error: `${query} не найдено. Измените запрос.`,
           });
         } else {
           this.setState({
@@ -66,12 +69,23 @@ export class App extends React.Component {
 
   loadMore = () => {
     this.setState(prevState => {
-      return { page: prevState.page + 1 };
+      return {
+        page: prevState.page + 1,
+      };
+    });
+  };
+
+  showModal = largeImage => {
+    this.setState(prevState => {
+      return {
+        showModal: !prevState.showModal,
+        modalImage: largeImage,
+      };
     });
   };
 
   render() {
-    const { error, images } = this.state;
+    const { error, images, modalImage } = this.state;
     const lastPage = Math.ceil(this.state.totalHits / 12) > this.state.page;
 
     return (
@@ -88,7 +102,12 @@ export class App extends React.Component {
         )}
 
         {error && <p style={{ color: 'red' }}> {error} </p>}
+
         {this.state.isLoading && <Loader />}
+
+        {this.state.showModal && (
+          <Modal showModal={this.showModal} largeImage={modalImage} />
+        )}
       </div>
     );
   }

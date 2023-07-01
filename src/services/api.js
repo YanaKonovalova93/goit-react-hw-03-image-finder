@@ -24,6 +24,5 @@ export const fetchImages = async (query, page) => {
     })
   );
 
-    return { hits, totalHits: response.data.totalHits }
+  return { hits, totalHits: response.data.totalHits };
 };
-

@@ -1,4 +1,3 @@
-
 import styled from '@emotion/styled';
 
 export const SearchbarBox = styled.header`
@@ -16,8 +15,7 @@ export const SearchbarBox = styled.header`
   padding-bottom: 10px;
   color: #fff;
   background-color: #3f51b5;
- box-shadow: 0px 2px 4px - 1px rgba(0, 0, 0, 0.2),
-      0px 4px;
+  box-shadow: 0px 2px 4px - 1px rgba(0, 0, 0, 0.2), 0px 4px;
 `;
 
 export const Form = styled.form`
@@ -39,16 +37,20 @@ export const Button = styled.button`
   background-size: 40%;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.6;
+  opacity: 0.5;
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   outline: none;
+
+  :hover {
+    opacity: 1;
+  }
 `;
 
 export const ButtonLabel = styled.label`
   position: absolute;
   width: 1px;
- height: 1px;
+  height: 1px;
   padding: 0;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
@@ -66,10 +68,9 @@ export const Input = styled.input`
   outline: none;
   padding-left: 4px;
   padding-right: 4px;
+
+  ::placeholder {
+    font: inherit;
+    font-size: 18px;
+  }
 `;
-
-
-// .SearchForm-input::placeholder {
-//   font: inherit;
-//   font-size: 18px;
-// }

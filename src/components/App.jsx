@@ -1,13 +1,12 @@
 import React from 'react';
 
-
 import { fetchImages } from 'services/api';
-import { SearchBar } from './Searchbar/Searchbar'
-import { ImageGallery } from './ImageGallery/ImageGallery'
-import { Button } from './Button/Button'
-import { Loader } from './Loader/Loader'
-import {Modal} from './Modal/Modal'
-
+import { SearchBar } from './Searchbar/Searchbar';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Button } from './Button/Button';
+import { Loader } from './Loader/Loader';
+import { Modal } from './Modal/Modal';
+import { ImagesGalleryDiv } from './App.styled';
 
 export class App extends React.Component {
   state = {
@@ -32,7 +31,7 @@ export class App extends React.Component {
         const { hits, totalHits } = await fetchImages(query, page);
         if (totalHits < 1) {
           this.setState({
-            error: `${query} не найдено. Измените запрос.`,
+            error: `Nothing found for your request "${query}"`,
           });
         } else {
           this.setState({
@@ -48,7 +47,7 @@ export class App extends React.Component {
         });
       } catch (error) {
         this.setState({
-          error: 'Что-то пошло не так...',
+          error: 'Something went wrong...',
         });
       } finally {
         this.setState({ isLoading: false });
@@ -62,6 +61,7 @@ export class App extends React.Component {
     }
 
     this.setState({
+      page: 1,
       query: event.target.elements.query.value,
       images: [],
     });
@@ -89,26 +89,38 @@ export class App extends React.Component {
     const lastPage = Math.ceil(this.state.totalHits / 12) > this.state.page;
 
     return (
-      <div>
+      <ImagesGalleryDiv>
         <SearchBar
           handleSubmit={event => {
             this.handleSubmit(event);
           }}
         />
-        {images && <ImageGallery images={images} />}
+
+        {this.state.showModal && (
+          <Modal showModal={this.showModal} largeImage={modalImage} />
+        )}
+        {images && <ImageGallery images={images} openModal={this.showModal} />}
+
+        {this.state.isLoading && <Loader />}
 
         {images.length > 0 && lastPage && (
           <Button onClickLoadMore={this.loadMore} />
         )}
 
-        {error && <p style={{ color: 'red' }}> {error} </p>}
-
-        {this.state.isLoading && <Loader />}
-
-        {this.state.showModal && (
-          <Modal showModal={this.showModal} largeImage={modalImage} />
+        {error && (
+          <p
+            style={{
+              color: 'black',
+              backgroundColor: 'red',
+              textAlign: 'center',
+              padding: '20px',
+            }}
+          >
+            {' '}
+            {error}{' '}
+          </p>
         )}
-      </div>
+      </ImagesGalleryDiv>
     );
   }
 }
